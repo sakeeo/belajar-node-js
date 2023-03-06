@@ -61,7 +61,7 @@ model opname {
   iduser     Int
   status     opname_status @default(pending)
   created_at DateTime      @default(now()) @db.Timestamp(0)
-  updated_at DateTime      @default(dbgenerated("('0000-00-00 00:00:00')")) @db.Timestamp(0)
+  updated_at DateTime      @default(now()) @db.Timestamp(0)
 
   @@map("23_opname")
 }
@@ -109,7 +109,7 @@ model produk_kategori {
   id           Int      @id @default(autoincrement())
   kategori     String   @db.VarChar(255)
   date_created DateTime @default(now()) @db.Timestamp(0)
-  date_updated DateTime @default(dbgenerated("('0000-00-00 00:00:00')")) @db.Timestamp(0)
+  date_updated DateTime @default(now()) @db.Timestamp(0)
 
   @@map("23_produk_kategori")
 }
@@ -119,7 +119,7 @@ model produk_sub_kategori {
   produk_kategori_id Int
   sub_kategori       String   @db.VarChar(255)
   date_created       DateTime @default(now()) @db.Timestamp(0)
-  date_updated       DateTime @default(dbgenerated("('0000-00-00 00:00:00')")) @db.Timestamp(0)
+  date_updated       DateTime @default(now()) @db.Timestamp(0)
 
   @@map("23_produk_sub_kategori")
 }
@@ -153,6 +153,7 @@ model user_gallery_ba_outlet {
 
 model users23 {
   iduser    Int    @id @default(autoincrement())
+  uuid      String @db.VarChar(255)
   username  String @db.VarChar(150)
   password  String @db.VarChar(250)
   idpegawai Int
@@ -169,8 +170,8 @@ model costumeusers {
   password          String    @db.VarChar(255)
   remember_token    String?   @db.VarChar(100)
   api_token         String?   @db.VarChar(255)
-  created_at        DateTime? @db.Timestamp(0)
-  updated_at        DateTime? @db.Timestamp(0)
+  created_at        DateTime? @default(now()) @db.Timestamp(0)
+  updated_at        DateTime? @default(now()) @db.Timestamp(0)
 }
 
 model failed_jobs {
@@ -211,8 +212,8 @@ model personal_access_tokens {
   token          String    @unique(map: "personal_access_tokens_token_unique") @db.VarChar(64)
   abilities      String?   @db.Text
   last_used_at   DateTime? @db.Timestamp(0)
-  created_at     DateTime? @db.Timestamp(0)
-  updated_at     DateTime? @db.Timestamp(0)
+  created_at     DateTime? @default(now()) @db.Timestamp(0)
+  updated_at     DateTime? @default(now()) @db.Timestamp(0)
   expires_at     DateTime  @default(now()) @db.Timestamp(0)
 
   @@index([tokenable_type, tokenable_id], map: "personal_access_tokens_tokenable_type_tokenable_id_index")
@@ -465,8 +466,8 @@ model tb_keuangan {
   keterangan String   @db.VarChar(256)
   debet      Float    @db.Float
   kredit     Float    @db.Float
-  created_at Int
-  updated_at Int
+  created_at DateTime @default(now()) @db.Timestamp(0)
+  updated_at DateTime @default(now()) @db.Timestamp(0)
 }
 
 model tb_kode_pettycash {
@@ -682,8 +683,8 @@ model tb_pettycash {
   debet      Int?
   kredit     Int?
   dept       String?          @db.VarChar(256)
-  created_at Int?
-  updated_at Int?
+  created_at DateTime @default(now()) @db.DateTime(0)
+  updated_at DateTime @default(now()) @db.DateTime(0)
   del        tb_pettycash_del @default(n)
 }
 
@@ -856,8 +857,8 @@ model tb_project {
   nama       String? @db.VarChar(255)
   link       String? @db.VarChar(255)
   activated  String? @db.VarChar(255)
-  created_at Int?
-  updated_at Int?
+  created_at DateTime @default(now()) @db.Timestamp(0)
+  updated_at DateTime @default(now()) @db.Timestamp(0)
   delete_at  Int?
 }
 
@@ -880,8 +881,8 @@ model tb_project_detail {
   qty          Int?
   description  String? @db.VarChar(255)
   created_at   Int?
-  updated_at   Int?
-  deleted_at   Int?
+  updated_at   DateTime @default(now()) @db.Timestamp(0)
+  deleted_at   DateTime @default(now()) @db.Timestamp(0)
 }
 
 model tb_project_history {
@@ -915,7 +916,7 @@ model tb_promote {
   harga_awal    Int?
   harga_special Int?
   created_at    DateTime          @default(now()) @db.Timestamp(0)
-  updated_at    DateTime          @default(dbgenerated("('0000-00-00 00:00:00')")) @db.Timestamp(0)
+  updated_at    DateTime          @default(now()) @db.Timestamp(0)
   date          DateTime          @db.Date
   kategori      String?           @db.VarChar(256)
   keterangan    String            @db.VarChar(255)
