@@ -1,0 +1,2207 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model absensi {
+  idabsensi Int            @id @default(autoincrement())
+  idpegawai Int
+  tanggal   DateTime       @db.Date
+  in        DateTime       @db.DateTime(0)
+  out       DateTime       @db.DateTime(0)
+  status    absensi_status @default(online)
+
+  @@map("23_absensi")
+}
+
+model absensi_photo {
+  idabsensiphoto Int                 @id @default(autoincrement())
+  idabsensi      Int
+  photo          String              @db.VarChar(255)
+  jenis          absensi_photo_jenis
+  waktu          DateTime            @db.DateTime(0)
+  lokasi         String              @db.VarChar(255)
+  latitude       String              @db.VarChar(100)
+  longtitude     String              @db.VarChar(100)
+
+  @@map("23_absensi_photo")
+}
+
+model customer_knowledge {
+  id           Int                    @id @default(autoincrement())
+  customer_id  String                 @db.VarChar(20)
+  field        String                 @db.VarChar(255)
+  val          String                 @db.VarChar(255)
+  date_created DateTime               @default(now()) @db.Timestamp(0)
+  date_updated DateTime               @default(now()) @db.Timestamp(0)
+  del          customer_knowledge_del @default(n)
+
+  @@map("23_customer_knowledge")
+}
+
+model menu_galley {
+  id_menu    Int                    @id @default(autoincrement())
+  nama_menu  String                 @db.VarChar(100)
+  jenis_menu menu_galley_jenis_menu @default(main)
+  link_url   String                 @db.VarChar(256)
+  icon       String                 @db.VarChar(128)
+  urutan     Int
+  main_id    Int?
+
+  @@map("23_menu_galley")
+}
+
+model opname {
+  id         Int           @id @default(autoincrement())
+  idoutlet   String        @db.VarChar(25)
+  iduser     Int
+  status     opname_status @default(pending)
+  created_at DateTime      @default(now()) @db.Timestamp(0)
+  updated_at DateTime      @default(dbgenerated("('0000-00-00 00:00:00')")) @db.Timestamp(0)
+
+  @@map("23_opname")
+}
+
+model opname_item {
+  id          Int                      @id @default(autoincrement())
+  opname_id   Int
+  idsku       String                   @db.VarChar(25)
+  iduser      Int
+  fisik       opname_item_fisik?
+  pricetag    opname_item_pricetag?
+  atc         opname_item_atc?
+  note        String?                  @db.Text
+  image       String?                  @db.VarChar(255)
+  created_at  DateTime                 @default(now()) @db.Timestamp(0)
+  updated_at  DateTime                 @default(now()) @db.Timestamp(0)
+  status_item opname_item_status_item? @default(pending)
+
+  @@map("23_opname_item")
+}
+
+model pegawai {
+  idpegawai    Int         @id @default(autoincrement())
+  namadepan    String      @db.VarChar(25)
+  namabelakang String      @db.VarChar(25)
+  hp           String      @db.VarChar(25)
+  alamat       String      @db.VarChar(255)
+  photo        String      @db.VarChar(255)
+  date_created DateTime    @default(now()) @db.Timestamp(0)
+  date_updated DateTime    @default(now()) @db.Timestamp(0)
+  del          pegawai_del @default(n)
+
+  @@map("23_pegawai")
+}
+
+model pegawai_outlet {
+  idpegawaioutlet Int    @id @default(autoincrement())
+  idpegawai       Int
+  idoutlet        String @db.VarChar(10)
+
+  @@map("23_pegawai_outlet")
+}
+
+model produk_kategori {
+  id           Int      @id @default(autoincrement())
+  kategori     String   @db.VarChar(255)
+  date_created DateTime @default(now()) @db.Timestamp(0)
+  date_updated DateTime @default(dbgenerated("('0000-00-00 00:00:00')")) @db.Timestamp(0)
+
+  @@map("23_produk_kategori")
+}
+
+model produk_sub_kategori {
+  id                 Int      @id @default(autoincrement())
+  produk_kategori_id Int
+  sub_kategori       String   @db.VarChar(255)
+  date_created       DateTime @default(now()) @db.Timestamp(0)
+  date_updated       DateTime @default(dbgenerated("('0000-00-00 00:00:00')")) @db.Timestamp(0)
+
+  @@map("23_produk_sub_kategori")
+}
+
+model share_ba {
+  id           Int                @id @default(autoincrement())
+  kategori     share_ba_kategori?
+  min          Float?
+  persentase   Int?
+  date_created DateTime?          @db.Timestamp(0)
+  date_updated DateTime?          @db.Timestamp(0)
+
+  @@map("23_share_ba")
+}
+
+model user_gallery_access {
+  id                 Int @id @default(autoincrement())
+  user_gallery_ba_id Int
+  menu_id            Int
+
+  @@map("23_user_gallery_access")
+}
+
+model user_gallery_ba_outlet {
+  id                 Int    @id @default(autoincrement())
+  user_gallery_ba_id Int
+  idoutlet           String @db.VarChar(10)
+
+  @@map("23_user_gallery_ba_outlet")
+}
+
+model users23 {
+  iduser    Int    @id @default(autoincrement())
+  username  String @db.VarChar(150)
+  password  String @db.VarChar(250)
+  idpegawai Int
+  level     Int
+
+  @@map("23_users")
+}
+
+model costumeusers {
+  id                BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  name              String    @db.VarChar(255)
+  email             String    @unique(map: "users_email_unique") @db.VarChar(255)
+  email_verified_at DateTime? @db.Timestamp(0)
+  password          String    @db.VarChar(255)
+  remember_token    String?   @db.VarChar(100)
+  api_token         String?   @db.VarChar(255)
+  created_at        DateTime? @db.Timestamp(0)
+  updated_at        DateTime? @db.Timestamp(0)
+}
+
+model failed_jobs {
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  uuid       String   @unique(map: "failed_jobs_uuid_unique") @db.VarChar(255)
+  connection String   @db.Text
+  queue      String   @db.Text
+  payload    String   @db.LongText
+  exception  String   @db.LongText
+  failed_at  DateTime @default(now()) @db.Timestamp(0)
+}
+
+model groups {
+  id          Int    @id @default(autoincrement()) @db.UnsignedMediumInt
+  name        String @db.VarChar(20)
+  description String @db.VarChar(100)
+}
+
+model login_attempts {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  ip_address String @db.VarChar(45)
+  login      String @db.VarChar(100)
+  time       Int?   @db.UnsignedInt
+}
+
+model penagihan_piutang {
+  id               Int      @id @default(autoincrement())
+  nonota           String   @db.VarChar(80)
+  tanggalpenagihan DateTime @db.Date
+  keterangan       String   @db.Text
+}
+
+model personal_access_tokens {
+  id             BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  tokenable_type String    @db.VarChar(255)
+  tokenable_id   BigInt    @db.UnsignedBigInt
+  name           String    @db.VarChar(255)
+  token          String    @unique(map: "personal_access_tokens_token_unique") @db.VarChar(64)
+  abilities      String?   @db.Text
+  last_used_at   DateTime? @db.Timestamp(0)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+  expires_at     DateTime  @default(now()) @db.Timestamp(0)
+
+  @@index([tokenable_type, tokenable_id], map: "personal_access_tokens_tokenable_type_tokenable_id_index")
+}
+
+model tb_biaya_tambahan {
+  id_biaya_tambahan String  @id @db.VarChar(25)
+  nama_biaya        String? @db.VarChar(255)
+}
+
+model tb_box {
+  id_box   Int    @id @default(autoincrement())
+  nama_box String @db.VarChar(25)
+}
+
+model tb_cust_group {
+  id     Int     @id @default(autoincrement())
+  idcust String  @db.VarChar(256)
+  grup   String? @db.VarChar(256)
+  idba   String  @db.VarChar(256)
+}
+
+model tb_deposit {
+  id_dep      String          @id @db.VarChar(11)
+  tanggal_dep DateTime        @db.Date
+  idcustomer  String          @db.VarChar(25)
+  idjp        String          @db.VarChar(10)
+  jumlah_dep  Float?
+  del         tb_deposit_del? @default(n)
+}
+
+model tb_deposit_penggunaan {
+  id_dep_peng      Int      @id @default(autoincrement())
+  id_dep           String   @db.VarChar(25)
+  tanggal_dep_peng DateTime @db.Date
+  nonota           String   @db.VarChar(25)
+  jumlah           Float
+  idcustomer       String?  @db.VarChar(50)
+}
+
+model tb_design {
+  id_design        String            @id @db.VarChar(25)
+  tgl_design       DateTime          @db.Date
+  id_jenis         String            @db.VarChar(50)
+  nama_design      String            @db.VarChar(256)
+  biaya_design     Int
+  biaya_pengerjaan Float?            @db.Float
+  biaya_service    Int
+  ongkos_plate     Int
+  tgl_selesai      DateTime?         @db.Date
+  id_pengrajin     String            @db.VarChar(10)
+  keterangan       String            @db.Text
+  del              tb_design_del     @default(n)
+  urutan           Int               @default(autoincrement())
+  status           tb_design_status? @default(AVAILABLE)
+
+  @@index([id_pengrajin], map: "id_pengrajin")
+  @@index([urutan], map: "urutan")
+}
+
+model tb_design_detail {
+  id           Int      @id @default(autoincrement())
+  id_design    String   @db.VarChar(256)
+  tanggal      DateTime @db.Date
+  id_secondary String   @db.VarChar(256)
+  qty          Int
+}
+
+model tb_history_sku {
+  id        Int     @id @default(autoincrement())
+  idsku     String? @db.VarChar(255)
+  idpameran String? @db.VarChar(255)
+}
+
+model tb_ilustrasi {
+  id      String              @id @db.VarChar(25)
+  tanggal DateTime            @db.Date
+  nama    String?             @db.VarChar(256)
+  del     tb_ilustrasi_del    @default(n)
+  urutan  Int                 @unique(map: "urutan") @default(autoincrement())
+  status  tb_ilustrasi_status
+}
+
+model tb_ilustrasi_material {
+  id           Int      @id @default(autoincrement())
+  id_ilustrasi String   @db.VarChar(25)
+  tanggal      DateTime @db.Date
+  id_secondary String   @db.VarChar(25)
+  qty_ambil    Float    @db.Float
+}
+
+model tb_inventory {
+  id         Int              @id @default(autoincrement())
+  nama       String?          @db.Text
+  jenis      String?          @db.VarChar(256)
+  tahunbeli  String?          @db.VarChar(256)
+  nilaibeli  String?          @db.VarChar(256)
+  kondisi    String?          @db.VarChar(256)
+  keterangan String?          @db.Text
+  created_on DateTime         @default(now()) @db.Timestamp(6)
+  del        tb_inventory_del @default(no)
+}
+
+model tb_inventory_photo {
+  id           Int                    @id @default(autoincrement())
+  id_inventory Int
+  photo        String?                @db.Text
+  created_on   DateTime               @default(now()) @db.Timestamp(6)
+  del          tb_inventory_photo_del @default(no)
+}
+
+model tb_invoice {
+  noinvoice      String    @id @db.VarChar(25)
+  tanggalinvoice DateTime? @db.Date
+  nonota         String?   @db.VarChar(25)
+  jenis          String?   @db.VarChar(50)
+  namacustomer   String?   @db.VarChar(50)
+}
+
+model tb_invoice_item {
+  iditem    Int     @id @default(autoincrement())
+  code      String? @db.VarChar(25)
+  item      String? @db.VarChar(20)
+  amount    Float?
+  quantity  Int?
+  noinvoice String? @db.VarChar(25)
+}
+
+model tb_invoice_item_smtara {
+  id          Int    @id @default(autoincrement())
+  idinvoice   String @db.VarChar(10)
+  idsku       String @db.VarChar(8)
+  namaproduk  String @db.VarChar(50)
+  qty         Int
+  hargasatuan Float
+}
+
+model tb_invoice_smtara {
+  idinvoice    String                   @id @db.VarChar(10)
+  tanggal      DateTime                 @db.Date
+  bulan        String                   @db.VarChar(2)
+  tahun        String                   @db.VarChar(5)
+  namacustomer String                   @db.VarChar(50)
+  del          tb_invoice_smtara_del    @default(n)
+  potongan     Float
+  term1        Float
+  term2        Float
+  idcustomer   String                   @db.VarChar(10)
+  status       tb_invoice_smtara_status @default(unpaid)
+}
+
+model tb_jenis_material {
+  id_jenis_material Int    @id @default(autoincrement())
+  jenis_material    String @db.VarChar(25)
+}
+
+model tb_jenis_nota {
+  id        Int    @id @default(autoincrement())
+  nama_nota String @db.VarChar(256)
+  url       String @db.VarChar(256)
+}
+
+model tb_jenis_produk {
+  id_jenis_produk String @id @db.VarChar(10)
+  jenis_produk    String @db.VarChar(50)
+}
+
+model tb_jp {
+  idjp                    String    @id @db.VarChar(10)
+  jenispembayaran         String?   @db.VarChar(25)
+  edc_banktujuan          String?   @db.VarChar(25)
+  jeniskartu_banktransfer String?   @db.VarChar(50)
+  program_cicilan         String?   @db.VarChar(50)
+  mdr                     Decimal?  @db.Decimal(8, 2)
+  rek                     String    @default("KRM") @db.VarChar(20)
+  del                     tb_jp_del @default(n)
+}
+
+model tb_karet {
+  id_karet      String          @id @db.VarChar(25)
+  tgl_karet     DateTime        @db.Date
+  nama_karet    String          @db.VarChar(256)
+  berat_karet   String          @default("0") @db.VarChar(256)
+  harga_pergram String          @db.VarChar(256)
+  id_lilin      String?         @db.VarChar(20)
+  del           tb_karet_del    @default(n)
+  urutan        Int             @default(autoincrement())
+  id_box        String          @db.VarChar(25)
+  status        tb_karet_status
+
+  @@index([urutan], map: "urutan")
+}
+
+model tb_karet_detail {
+  id       Int                  @id @default(autoincrement())
+  id_karet String               @db.VarChar(255)
+  kategori String               @db.VarChar(255)
+  berat    String               @db.VarChar(255)
+  harga    String               @db.VarChar(255)
+  status   String?              @default("Available") @db.VarChar(255)
+  del      tb_karet_detail_del? @default(no)
+}
+
+model tb_karet_master {
+  id_master Int                    @id @default(autoincrement())
+  id_lilin  String?                @db.VarChar(256)
+  id_karet  String?                @db.VarChar(256)
+  nama      String?                @db.VarChar(256)
+  harga     String?                @db.VarChar(256)
+  status    tb_karet_master_status @default(Available)
+  box       String?                @db.VarChar(256)
+  del       tb_karet_master_del    @default(N)
+}
+
+model tb_kasbon {
+  id           Int      @id @default(autoincrement())
+  id_pengrajin String?  @db.VarChar(256)
+  tanggal      DateTime @db.Date
+  keterangan   String?  @db.Text
+  jumlah       Int
+  status       String?  @db.VarChar(256)
+  created_on   DateTime @default(now()) @db.Timestamp(0)
+}
+
+model tb_kasting {
+  id_kasting    String            @id @db.VarChar(10)
+  id_karet      String?           @db.VarChar(10)
+  id_lilin      String?           @db.VarChar(10)
+  tgl_kasting   DateTime          @db.Date
+  bahan_kasting String?           @db.VarChar(25)
+  nama_kasting  String?           @db.VarChar(100)
+  bentuk        String?           @db.VarChar(25)
+  ukuran        String?           @db.VarChar(50)
+  berat         String?           @db.VarChar(256)
+  qty           Int?
+  satuan        String            @db.VarChar(25)
+  harga_satuan  Int?
+  qty_update    Int?
+  status        tb_kasting_status
+  id_box        String            @db.VarChar(50)
+  del           tb_kasting_del    @default(N)
+  urutan        Int               @default(autoincrement())
+
+  @@index([urutan], map: "urutan")
+}
+
+model tb_keuangan {
+  id         Int      @id @default(autoincrement())
+  tanggal    DateTime @db.Date
+  keterangan String   @db.VarChar(256)
+  debet      Float    @db.Float
+  kredit     Float    @db.Float
+  created_at Int
+  updated_at Int
+}
+
+model tb_kode_pettycash {
+  id   String @id @db.VarChar(3)
+  nama String @db.VarChar(256)
+}
+
+model tb_lilin {
+  id_lilin     String              @id @db.VarChar(25)
+  tgl_lilin    DateTime            @db.Date
+  nama_lilin   String              @db.VarChar(100)
+  biaya_lilin  Int
+  berat_lilin  String              @db.VarChar(256)
+  id_pengrajin String              @db.VarChar(10)
+  id_design    String              @db.VarChar(20)
+  status       tb_lilin_status     @default(Available)
+  keterangan   tb_lilin_keterangan
+  del          tb_lilin_del        @default(n)
+  id_box       String              @db.VarChar(50)
+  urutan       Int                 @default(autoincrement())
+
+  @@index([urutan], map: "urutan")
+}
+
+model tb_mata_uang {
+  id_mata_uang String            @id @db.VarChar(255)
+  mata_uang    String?           @db.VarChar(255)
+  nilai_rupiah Int?
+  del          tb_mata_uang_del? @default(n)
+  simbol       String?           @db.VarChar(255)
+}
+
+model tb_material {
+  id_material    String          @id @db.VarChar(10)
+  tgl_material   DateTime        @db.Date
+  jenis_material String?         @db.VarChar(25)
+  nama_material  String?         @db.VarChar(100)
+  warna_utama    String          @db.VarChar(50)
+  warna          String?         @db.VarChar(25)
+  bentuk         String?         @db.VarChar(25)
+  ukuran         String?         @db.VarChar(50)
+  qty            Float?
+  satuan         String          @db.VarChar(25)
+  harga_satuan   Float?
+  qty_update     Float?
+  photo          String          @db.VarChar(100)
+  id_box         String          @db.VarChar(50)
+  ket            String?         @db.VarChar(256)
+  del            tb_material_del @default(n)
+  urutan         Int             @default(autoincrement())
+
+  @@index([urutan], map: "urutan")
+}
+
+model tb_material_tambahan {
+  id_material    String                   @id @db.VarChar(256)
+  tgl_material   String?                  @db.VarChar(256)
+  jenis_material String?                  @db.VarChar(256)
+  nama_material  String?                  @db.VarChar(256)
+  warna_utama    String?                  @db.VarChar(256)
+  warna          String?                  @db.VarChar(256)
+  bentuk         String?                  @db.VarChar(256)
+  ukuran         String?                  @db.VarChar(256)
+  qty            String?                  @db.VarChar(256)
+  satuan         String?                  @db.VarChar(256)
+  harga_satuan   String?                  @db.VarChar(256)
+  qty_update     String?                  @db.VarChar(256)
+  photo          String?                  @db.VarChar(256)
+  id_box         String?                  @db.VarChar(256)
+  ket            String?                  @db.VarChar(256)
+  del            tb_material_tambahan_del @default(n)
+  urutan         Int                      @default(autoincrement())
+
+  @@index([urutan], map: "INDEX")
+}
+
+model tb_menu {
+  id_menu    Int                @id @default(autoincrement())
+  nama_menu  String             @db.VarChar(100)
+  jenis_menu tb_menu_jenis_menu @default(Default)
+  link_url   String             @db.VarChar(256)
+  icon       String             @db.VarChar(128)
+  urutan     Int
+}
+
+model tb_nota {
+  id_nota    String   @id @db.VarChar(10)
+  tgl_nota   DateTime @db.Date
+  jenis_nota String   @db.VarChar(256)
+  id_detail  String?  @db.VarChar(10)
+  qty        Int?
+  berat      Float?   @db.Float
+  total      Int
+  tambahan   Int?
+}
+
+model tb_nota_detail {
+  id         Int     @id @default(autoincrement())
+  id_nota    String? @db.VarChar(10)
+  jenis_nota String  @db.VarChar(256)
+  jenis      String  @db.VarChar(50)
+  keterangan String  @db.VarChar(256)
+  qty        Int?
+  berat      Float?  @db.Float
+  harga      Float?  @db.Float
+  total      Int
+  tambahan   Int?
+}
+
+model tb_nota_krm {
+  id         String   @id @db.VarChar(11)
+  tanggal    DateTime @db.Date
+  idsetor    String?  @db.VarChar(10)
+  created_at DateTime @default(now()) @db.DateTime(0)
+  updated_at DateTime @default(now()) @db.DateTime(0)
+}
+
+model tb_packaging {
+  idpackaging    String  @id @db.VarChar(10)
+  jenispackaging String? @db.VarChar(255)
+  namapackaging  String? @db.VarChar(255)
+  ukuran         String  @db.VarChar(100)
+  hargasatuan    String? @db.VarChar(255)
+  qty            Int?
+  idoutlet       String  @db.VarChar(10)
+  hargamodal     Int
+}
+
+model tb_packaging_transaksi {
+  idtransaksipackaging Int                                    @id @default(autoincrement())
+  jenistransaksi       tb_packaging_transaksi_jenistransaksi? @default(in)
+  idpackaging          String?                                @db.VarChar(255)
+  qty                  Int?                                   @default(0)
+  tanggal              DateTime?                              @db.Date
+  idoutlet             String?                                @db.VarChar(10)
+  userid               String                                 @db.VarChar(25)
+}
+
+model tb_pelunasan {
+  idpelunasan      Int                @id @default(autoincrement())
+  tanggalpelunasan DateTime?          @db.Date
+  nonota           String?            @db.VarChar(255)
+  idjp             String?            @default("") @db.VarChar(8)
+  jumlahpembayaran Float?
+  flag             tb_pelunasan_flag? @default(n)
+  persenmdr        Decimal?           @db.Decimal(10, 2)
+}
+
+model tb_pengambilan {
+  id_pengambilan    String   @id @db.VarChar(25)
+  id_pengrajin      String   @db.VarChar(25)
+  tgl               DateTime @db.Date
+  total_pengambilan Int
+  urutan            Int      @default(autoincrement())
+
+  @@index([urutan], map: "urutan")
+}
+
+model tb_pengambilan_detail {
+  id_pengambilan_detail Int      @id @default(autoincrement())
+  id_pengambilan        String?  @db.VarChar(25)
+  jenis                 String?  @default("BARU") @db.VarChar(256)
+  id_pengrajin          String   @db.VarChar(25)
+  id_produksi           String   @db.VarChar(25)
+  keterangan            String?  @db.VarChar(256)
+  status                String?  @db.VarChar(256)
+  detail_progress       String?  @db.Text
+  created_at            DateTime @default(now()) @db.DateTime(0)
+  updated_at            DateTime @default(now()) @db.DateTime(0)
+}
+
+model tb_pengrajin {
+  id_pengrajin     String            @id @db.VarChar(10)
+  nama_pengrajin   String            @db.VarChar(256)
+  alamat_pengrajin String            @db.Text
+  telp_pengrajin   String            @db.VarChar(256)
+  photo_pengrajin  String            @db.VarChar(256)
+  del              tb_pengrajin_del? @default(n)
+}
+
+model tb_penyetoran {
+  id_penyetoran    String   @id @db.VarChar(25)
+  id_pengrajin     String   @db.VarChar(25)
+  tgl              DateTime @db.Date
+  total_penyetoran Int
+  urutan           Int      @default(autoincrement())
+
+  @@index([urutan], map: "urutan")
+}
+
+model tb_penyetoran_detail {
+  id_penyetoran_detail  Int      @id @default(autoincrement())
+  id_penyetoran         String?  @db.VarChar(25)
+  jenis                 String   @db.VarChar(256)
+  id_pengrajin          String   @db.VarChar(25)
+  id_produksi           String?  @db.VarChar(25)
+  keterangan            String?  @db.VarChar(256)
+  id_pengambilan_detail Int?
+  biaya_produksi        Int
+  biaya_tambahan        Int?
+  status                String?  @db.VarChar(256)
+  created_at            DateTime @default(now()) @db.DateTime(0)
+  updated_at            DateTime @default(now()) @db.DateTime(0)
+}
+
+model tb_pettycash {
+  id         Int              @id @default(autoincrement())
+  tanggal    DateTime         @db.Date
+  bulan      Int
+  tahun      Int
+  kode       String           @db.VarChar(256)
+  keterangan String           @db.VarChar(256)
+  debet      Int?
+  kredit     Int?
+  dept       String?          @db.VarChar(256)
+  created_at Int?
+  updated_at Int?
+  del        tb_pettycash_del @default(n)
+}
+
+model tb_photo_design {
+  id_photo_design Int                 @id @default(autoincrement())
+  id_design       String?             @db.VarChar(25)
+  photo_design    String?             @db.VarChar(256)
+  del             tb_photo_design_del @default(n)
+}
+
+model tb_photo_ilustrasi {
+  id              Int                    @id @default(autoincrement())
+  id_ilustrasi    String                 @db.VarChar(25)
+  photo_ilustrasi String                 @db.VarChar(256)
+  del             tb_photo_ilustrasi_del @default(n)
+}
+
+model tb_photo_karet {
+  id_photo_karet Int                @id @default(autoincrement())
+  id_karet       String             @db.VarChar(8)
+  photo_karet    String             @db.VarChar(50)
+  del            tb_photo_karet_del @default(N)
+}
+
+model tb_photo_karet_master {
+  id        Int     @id @default(autoincrement())
+  id_master Int?
+  photo     String? @db.VarChar(256)
+}
+
+model tb_photo_kasting {
+  id         Int     @id @default(autoincrement())
+  id_kasting String  @db.VarChar(25)
+  photo      String? @db.VarChar(256)
+}
+
+model tb_photo_lilin {
+  id_photo_lilin Int                @id @default(autoincrement())
+  id_lilin       String             @db.VarChar(50)
+  photo_lilin    String             @db.VarChar(100)
+  del            tb_photo_lilin_del @default(n)
+}
+
+model tb_photo_material {
+  id          Int    @id @default(autoincrement())
+  id_material String @db.VarChar(25)
+  photo       String @db.VarChar(256)
+}
+
+model tb_photo_pettycash {
+  id           Int                    @id @default(autoincrement())
+  id_pettycash Int
+  gambar       String                 @db.Text
+  del          tb_photo_pettycash_del @default(no)
+  created_at   DateTime               @default(now()) @db.Timestamp(6)
+  delete_at    DateTime               @default(now()) @db.Timestamp(6)
+}
+
+model tb_po_2018 {
+  idpo                   String            @id @db.VarChar(50)
+  tgl_terima             DateTime          @db.DateTime(0)
+  pic                    String            @db.VarChar(25)
+  ba                     String            @db.VarChar(25)
+  sku                    String            @db.VarChar(25)
+  jenisproduk            String            @db.VarChar(25)
+  namaproduk             String            @db.VarChar(50)
+  namacustomer           String            @db.VarChar(50)
+  detailpo               String            @db.Text
+  tgl_kirimkewarehouse   DateTime          @db.DateTime(0)
+  tgl_masukkewarehouse   DateTime          @db.DateTime(0)
+  tgl_pengerjaan         DateTime          @db.DateTime(0)
+  pengrajin              String            @db.VarChar(50)
+  tgl_kembalikewarehouse DateTime          @db.DateTime(0)
+  biaya                  Int
+  tgl_kirimbutik         DateTime          @db.DateTime(0)
+  tgl_terimabutik        DateTime          @db.DateTime(0)
+  tgl_penyerahan         DateTime          @db.DateTime(0)
+  status                 tb_po_2018_status
+  idoutlet               String            @db.VarChar(18)
+  del                    tb_po_2018_del?   @default(n)
+  nonota                 String            @db.VarChar(50)
+}
+
+model tb_po_2018_pembayaran {
+  idpembayaran      Int                       @id @default(autoincrement())
+  tanggalpembayaran DateTime                  @db.Date
+  idpo              String                    @db.VarChar(25)
+  jns               tb_po_2018_pembayaran_jns
+  jenispembayaran   String                    @db.VarChar(25)
+  bank              String                    @db.VarChar(25)
+  jumlah            String                    @db.VarChar(25)
+}
+
+model tb_po_2018_photo {
+  idphotopo Int                   @id @default(autoincrement())
+  photopo   String?               @db.VarChar(255)
+  idpo      String?               @db.VarChar(255)
+  del       tb_po_2018_photo_del? @default(n)
+}
+
+model tb_po_pengiriman_2018 {
+  idpengiriman      String                     @id @db.VarChar(25)
+  noresi            String?                    @db.VarChar(50)
+  tanggalpengiriman DateTime?                  @db.DateTime(0)
+  del               tb_po_pengiriman_2018_del? @default(n)
+  idoutlet          String?                    @db.VarChar(50)
+}
+
+model tb_po_pengiriman_done_2018 {
+  idpengiriman      String                          @id @db.VarChar(25)
+  noresi            String?                         @db.VarChar(50)
+  tanggalpengiriman DateTime?                       @db.Date
+  del               tb_po_pengiriman_done_2018_del? @default(n)
+  idoutlet          String?                         @db.VarChar(50)
+}
+
+model tb_po_pengirimandetail_2018 {
+  id           Int     @id @default(autoincrement())
+  idpengiriman String? @db.VarChar(50)
+  idpo         String? @db.VarChar(50)
+}
+
+model tb_po_pengirimandetail_done_2018 {
+  id           Int     @id @default(autoincrement())
+  idpengiriman String? @db.VarChar(50)
+  idpo         String? @db.VarChar(50)
+}
+
+model tb_po_status_2018 {
+  id       Int     @id
+  statuspo String? @db.VarChar(50)
+}
+
+model tb_po_tracking_2018 {
+  idtracking  Int      @id @default(autoincrement())
+  idpo        String   @db.VarChar(50)
+  date_create DateTime @db.DateTime(0)
+  status      String   @db.VarChar(255)
+  namauser    String   @db.VarChar(50)
+}
+
+model tb_produk_detail {
+  id        Int                  @id @default(autoincrement())
+  id_sku    String               @db.VarChar(25)
+  id_design String?              @db.VarChar(25)
+  del       tb_produk_detail_del @default(n)
+}
+
+model tb_produk_dimensi {
+  id       Int    @id @default(autoincrement())
+  sku      Int
+  jenis    String @db.VarChar(255)
+  kategori String @db.VarChar(255)
+  size     String @db.VarChar(255)
+}
+
+model tb_produk_krm {
+  sku        String            @id @db.VarChar(9)
+  tanggal    DateTime          @default(now()) @db.Date
+  biaya      Int
+  design     String            @db.VarChar(10)
+  nota       String?           @db.VarChar(11)
+  del        tb_produk_krm_del @default(No)
+  created_at DateTime          @default(now()) @db.DateTime(0)
+  updated_at DateTime          @default(now()) @db.DateTime(0)
+}
+
+model tb_project {
+  id         Int     @id @default(autoincrement())
+  nama       String? @db.VarChar(255)
+  link       String? @db.VarChar(255)
+  activated  String? @db.VarChar(255)
+  created_at Int?
+  updated_at Int?
+  delete_at  Int?
+}
+
+model tb_project_agenda {
+  id          Int       @id @default(autoincrement())
+  project     Int
+  pic         String?   @db.VarChar(255)
+  date        DateTime? @db.Timestamp(0)
+  description String?   @db.VarChar(255)
+  created_at  DateTime? @default(now()) @db.Timestamp(0)
+  updated_at  DateTime? @default(now()) @db.Timestamp(0)
+}
+
+model tb_project_detail {
+  id           Int     @id @default(autoincrement())
+  project      String? @db.VarChar(255)
+  project_name Int?
+  kategori     String? @db.VarChar(255)
+  status       String? @db.VarChar(255)
+  qty          Int?
+  description  String? @db.VarChar(255)
+  created_at   Int?
+  updated_at   Int?
+  deleted_at   Int?
+}
+
+model tb_project_history {
+  id           Int       @id @default(autoincrement())
+  project      Int?
+  project_name Int?
+  qty          Int?
+  date         DateTime? @db.Date
+  description  String?   @db.VarChar(255)
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+  updated_at   DateTime? @default(now()) @db.Timestamp(6)
+  deleted_at   DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model tb_project_name {
+  id         Int       @id @default(autoincrement())
+  project    Int?
+  name       String?   @db.VarChar(255)
+  target     Int?
+  design     String?   @db.VarChar(255)
+  lilin      String?   @db.VarChar(255)
+  karet      String?   @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+}
+
+model tb_promote {
+  id            Int               @id @default(autoincrement())
+  sku           String?           @db.VarChar(256)
+  harga_awal    Int?
+  harga_special Int?
+  created_at    DateTime          @default(now()) @db.Timestamp(0)
+  updated_at    DateTime          @default(dbgenerated("('0000-00-00 00:00:00')")) @db.Timestamp(0)
+  date          DateTime          @db.Date
+  kategori      String?           @db.VarChar(256)
+  keterangan    String            @db.VarChar(255)
+  active        tb_promote_active @default(true)
+}
+
+model tb_proses_ilustrasi {
+  id           Int                        @id @default(autoincrement())
+  id_ilustrasi String                     @db.VarChar(25)
+  tgl_proses   DateTime                   @db.Date
+  tgl_selesai  DateTime                   @db.Date
+  status       tb_proses_ilustrasi_status
+}
+
+model tb_proses_karet {
+  id                 Int                    @id @default(autoincrement())
+  id_karet           String                 @db.VarChar(25)
+  id_detail          Int?
+  bahan_kasting      String?                @db.VarChar(64)
+  jumlah             Int
+  keterangan         String?                @db.Text
+  tanggal_proses     DateTime               @db.Date
+  tanggal_terproses  DateTime?              @db.Date
+  tanggal_terkasting DateTime?              @db.Date
+  status             tb_proses_karet_status
+  del                tb_proses_karet_del
+}
+
+model tb_proses_kasting {
+  id              Int                      @id @default(autoincrement())
+  id_kasting      String                   @db.VarChar(25)
+  jumlah          Int
+  tanggal_proses  DateTime                 @db.Date
+  tanggal_selesai DateTime                 @db.Date
+  status          tb_proses_kasting_status
+  del             tb_proses_kasting_del    @default(n)
+}
+
+model tb_proses_lilin {
+  id                 Int                          @id @default(autoincrement())
+  id_lilin           String                       @db.VarChar(25)
+  jenis_proses       tb_proses_lilin_jenis_proses
+  bahan_kasting      String?                      @db.VarChar(64)
+  jumlah             Int
+  tanggal_proses     DateTime                     @db.Date
+  tanggal_terproses  DateTime?                    @db.Date
+  tanggal_terkasting DateTime?                    @db.Date
+  status             tb_proses_lilin_status       @default(Proses)
+  del                tb_proses_lilin_del          @default(n)
+}
+
+model tb_recreate {
+  id  Int @id @default(autoincrement())
+  sku Int
+}
+
+model tb_salestergantung {
+  idsalestergantung Int                    @id @default(autoincrement())
+  idsku             String                 @db.VarChar(25)
+  idcostumer        String                 @db.VarChar(50)
+  date_create       DateTime               @db.DateTime(0)
+  date_modify       DateTime               @db.DateTime(0)
+  del               tb_salestergantung_del @default(n)
+}
+
+model tb_sarinah {
+  id          Int     @id @default(autoincrement())
+  sku         String  @db.VarChar(6)
+  jenis       String? @db.VarChar(255)
+  nama        String? @db.VarChar(255)
+  harga       Int?
+  description String? @db.Text
+  size        String  @db.VarChar(255)
+}
+
+model tb_service_2018 {
+  id                     String                 @id @db.VarChar(50)
+  tgl_terima             DateTime               @db.DateTime(0)
+  pic                    String                 @db.VarChar(25)
+  ba                     String                 @db.VarChar(25)
+  sku                    String                 @db.VarChar(25)
+  jenisproduk            String                 @db.VarChar(25)
+  namaproduk             String                 @db.VarChar(50)
+  namacustomer           String                 @db.VarChar(25)
+  detailservice          String                 @db.Text
+  tgl_kirimkewarehouse   DateTime               @db.DateTime(0)
+  tgl_masukkewarehouse   DateTime               @db.DateTime(0)
+  tgl_pengerjaan         DateTime               @db.DateTime(0)
+  pengrajin              String                 @db.VarChar(50)
+  tgl_kembalikewarehouse DateTime               @db.DateTime(0)
+  biaya                  Int
+  dp                     Int
+  tgl_kirimbutik         DateTime               @db.DateTime(0)
+  tgl_terimabutik        DateTime               @db.DateTime(0)
+  tgl_penyerahan         DateTime               @db.DateTime(0)
+  status                 tb_service_2018_status
+  idoutlet               String                 @db.VarChar(18)
+  del                    tb_service_2018_del?   @default(n)
+  idmatauang             String                 @db.VarChar(25)
+  nilairupiah            Int
+}
+
+model tb_service_2018_photo {
+  idphotoservice Int                        @id @default(autoincrement())
+  photoservice   String?                    @db.VarChar(255)
+  idservice      String?                    @db.VarChar(255)
+  del            tb_service_2018_photo_del? @default(n)
+}
+
+model tb_service_customer_2018 {
+  id                     String                                     @id @db.VarChar(50)
+  tgl_terima             DateTime                                   @db.DateTime(0)
+  pic                    String                                     @db.VarChar(25)
+  ba                     String                                     @db.VarChar(25)
+  sku                    String                                     @db.VarChar(25)
+  jenisproduk            String                                     @db.VarChar(25)
+  namaproduk             String                                     @db.VarChar(50)
+  namacustomer           String                                     @db.VarChar(100)
+  detailservice          String                                     @db.Text
+  tgl_kirimkewarehouse   DateTime                                   @db.DateTime(0)
+  tgl_masukkewarehouse   DateTime                                   @db.DateTime(0)
+  tgl_pengerjaan         DateTime                                   @db.DateTime(0)
+  pengrajin              String                                     @db.VarChar(50)
+  tgl_kembalikewarehouse DateTime?                                  @db.DateTime(0)
+  biaya                  Int
+  tgl_kirimbutik         DateTime?                                  @db.DateTime(0)
+  tgl_terimabutik        DateTime?                                  @db.DateTime(0)
+  tgl_penyerahan         DateTime?                                  @db.DateTime(0)
+  status                 tb_service_customer_2018_status
+  idoutlet               String                                     @db.VarChar(18)
+  del                    tb_service_customer_2018_del?              @default(n)
+  statuspembayaran       tb_service_customer_2018_statuspembayaran? @default(lunas)
+}
+
+model tb_service_customer_2018_pembayaran {
+  idpembayaran      Int                                       @id @default(autoincrement())
+  tanggalpembayaran DateTime                                  @db.Date
+  idservice         String                                    @db.VarChar(25)
+  idjp              String                                    @db.VarChar(10)
+  jumlahpembayaran  Float
+  persenmdr         Decimal?                                  @db.Decimal(5, 2)
+  flag              tb_service_customer_2018_pembayaran_flag? @default(y)
+}
+
+model tb_service_customer_2018_photo {
+  idphotoservice Int                                 @id @default(autoincrement())
+  photoservice   String?                             @db.VarChar(255)
+  idservice      String?                             @db.VarChar(255)
+  del            tb_service_customer_2018_photo_del? @default(n)
+}
+
+model tb_service_customer_pengiriman_2018 {
+  idpengiriman      String                                   @id @db.VarChar(25)
+  noresi            String?                                  @db.VarChar(50)
+  tanggalpengiriman DateTime?                                @db.DateTime(0)
+  del               tb_service_customer_pengiriman_2018_del? @default(n)
+  idoutlet          String?                                  @db.VarChar(50)
+}
+
+model tb_service_customer_pengiriman_2018_warehouse {
+  idpengiriman      String                                             @id @db.VarChar(25)
+  noresi            String?                                            @db.VarChar(50)
+  tanggalpengiriman DateTime?                                          @db.Date
+  del               tb_service_customer_pengiriman_2018_warehouse_del? @default(n)
+  idoutlet          String?                                            @db.VarChar(50)
+}
+
+model tb_service_customer_pengirimandetail_2018 {
+  id           Int     @id @default(autoincrement())
+  idpengiriman String? @db.VarChar(50)
+  idservice    String? @db.VarChar(50)
+}
+
+model tb_service_customer_pengirimandetail_2018_warehouse {
+  id           Int     @id @default(autoincrement())
+  idpengiriman String? @db.VarChar(50)
+  idservice    String? @db.VarChar(50)
+}
+
+model tb_service_customer_pengirimandetail_2018_warehouse_temp {
+  id        Int    @id @default(autoincrement())
+  idservice String @db.VarChar(25)
+}
+
+model tb_service_customer_status_2018 {
+  id            Int     @id @default(autoincrement())
+  statusservice String? @db.VarChar(50)
+}
+
+model tb_service_customer_tracking_2018 {
+  idtracking  Int      @id @default(autoincrement())
+  idservice   String   @db.VarChar(8)
+  date_create DateTime @db.DateTime(0)
+  status      String   @db.VarChar(255)
+  namauser    String   @db.VarChar(25)
+}
+
+model tb_service_pengiriman_2018 {
+  idpengiriman      String                          @id @db.VarChar(25)
+  noresi            String?                         @db.VarChar(50)
+  tanggalpengiriman DateTime?                       @db.DateTime(0)
+  del               tb_service_pengiriman_2018_del? @default(n)
+  idoutlet          String?                         @db.VarChar(50)
+}
+
+model tb_service_pengirimandetail_2018 {
+  id           Int     @id @default(autoincrement())
+  idpengiriman String? @db.VarChar(50)
+  idservice    String? @db.VarChar(50)
+}
+
+model tb_service_status_2018 {
+  id            Int     @id
+  statusservice String? @db.VarChar(50)
+}
+
+model tb_service_tracking_2018 {
+  idtracking  Int      @id @default(autoincrement())
+  idservice   String   @db.VarChar(8)
+  date_create DateTime @db.DateTime(0)
+  status      String   @db.VarChar(255)
+  namauser    String   @db.VarChar(25)
+}
+
+model tb_share_ba {
+  id         Int     @id @default(autoincrement())
+  kategori   String  @db.VarChar(25)
+  persentase Decimal @db.Decimal(10, 3)
+}
+
+model tb_special_cust {
+  id         Int                 @id @default(autoincrement())
+  id_cust    String              @db.VarChar(256)
+  del        tb_special_cust_del
+  created_on DateTime            @default(now()) @db.Timestamp(6)
+}
+
+model tb_tandaterima {
+  idttd     Int                @id @default(autoincrement())
+  tanggal   DateTime           @db.Date
+  dikirimke String             @db.VarChar(50)
+  alamat    String             @db.Text
+  del       tb_tandaterima_del @default(n)
+}
+
+model tb_tandaterima_item {
+  id         Int    @id @default(autoincrement())
+  idttd      Int
+  kategori   String @db.VarChar(20)
+  idsku      String @db.VarChar(10)
+  namaproduk String @db.VarChar(50)
+}
+
+model tb_token_potongan {
+  id          Int                           @id @default(autoincrement())
+  tanggal     DateTime?                     @db.Date
+  approved    String?                       @db.VarChar(255)
+  jumlah      Int?
+  keterangan  String?                       @db.Text
+  idsku       String                        @db.VarChar(25)
+  salesvolume tb_token_potongan_salesvolume
+  pergsv      Int
+}
+
+model tb_user_access {
+  id      Int @id @default(autoincrement())
+  user_id Int
+  menu_id Int
+
+  @@index([menu_id], map: "tb_user_access_ibfk_1")
+}
+
+model tb_user_gallery_ba {
+  id         Int    @id @default(autoincrement())
+  username   String @db.VarChar(256)
+  password   String @db.VarChar(256)
+  token      String @db.VarChar(256)
+  akses      String @db.VarChar(256)
+  id_outlet  String @db.VarChar(256)
+  id_ba      String @db.VarChar(256)
+  pegawai_id Int
+}
+
+model tbactivity {
+  idactivity Int             @id @default(autoincrement())
+  iduser     String?         @db.VarChar(6)
+  activity   String?         @db.Text
+  tanggal    DateTime        @db.Date
+  mulai      DateTime?       @db.Time(0)
+  akhir      DateTime?       @db.Time(0)
+  del        tbactivity_del? @default(n)
+  created_at Int?
+}
+
+model tbactivity_photo {
+  idphoto_activity Int     @id @default(autoincrement())
+  idactivity       Int?
+  photo            String? @db.VarChar(100)
+}
+
+model tbbrandadvisior {
+  idbrandadvisior String                  @id @db.VarChar(25)
+  groupba         String?                 @db.VarChar(255)
+  namaba          String?                 @db.VarChar(255)
+  status          tbbrandadvisior_status? @default(active)
+}
+
+model tbcostumer {
+  idcostumer        String             @id @default("") @db.VarChar(10)
+  namalengkap       String?            @db.VarChar(50)
+  nickname          String?            @db.VarChar(50)
+  tanggallahir      DateTime?          @db.Date
+  tanggalpernikahan DateTime?          @db.Date
+  alamat            String?            @db.Text
+  hp                String?            @db.VarChar(50)
+  telp              String?            @db.VarChar(50)
+  email             String?            @db.VarChar(50)
+  kodepos           String?            @db.VarChar(10)
+  agama             String?            @db.VarChar(10)
+  del               tbcostumer_del?    @default(n)
+  status            tbcostumer_status? @default(member)
+  idbrandadvisior   String             @db.VarChar(25)
+  todo              tbcostumer_todo    @default(y)
+}
+
+model tbcostumer_potensial {
+  idpc              String                    @id @default("") @db.VarChar(10)
+  namalengkap       String?                   @db.VarChar(50)
+  nickname          String?                   @db.VarChar(50)
+  tanggallahir      DateTime?                 @db.Date
+  tanggalpernikahan DateTime?                 @db.Date
+  alamat            String?                   @db.Text
+  hp                String?                   @db.VarChar(50)
+  telp              String?                   @db.VarChar(12)
+  email             String?                   @db.VarChar(50)
+  kodepos           String?                   @db.VarChar(10)
+  agama             String?                   @db.VarChar(10)
+  idbrandadvisior   String                    @db.VarChar(25)
+  inputby           String                    @db.VarChar(25)
+  keterangan        String                    @db.VarChar(255)
+  del               tbcostumer_potensial_del? @default(n)
+}
+
+model tbgift {
+  idgift     Int         @id @default(autoincrement())
+  idsku      String?     @db.VarChar(255)
+  tanggal    DateTime?   @db.Date
+  idcustomer String?     @db.VarChar(255)
+  keterangan String?     @db.VarChar(255)
+  del        tbgift_del? @default(n)
+}
+
+model tboutlet {
+  idoutlet     String        @id @default("") @db.VarChar(20)
+  namaoutlet   String?       @db.VarChar(50)
+  alamatoutlet String?       @db.Text
+  idmatauang   String?       @db.VarChar(10)
+  level        Int?
+  del          tboutlet_del? @default(n)
+}
+
+model tbpameran {
+  idpameran             String                  @id @default("") @db.VarChar(255)
+  namapameran           String?                 @db.VarChar(255)
+  jenispameran          tbpameran_jenispameran?
+  tanggalpameran        DateTime?               @db.Date
+  tanggalselesaipameran DateTime?               @db.Date
+  lokasipameran         String?                 @db.Text
+  idcostumer            String                  @db.VarChar(255)
+  idoutlet              String?                 @db.VarChar(255)
+  idba                  String                  @db.VarChar(30)
+  idmatauang            String?                 @db.VarChar(255)
+  upharga               Int
+  del                   tbpameran_del           @default(n)
+  statuspmr             tbpameran_statuspmr     @default(active)
+}
+
+model tbpemakaianpribadi {
+  idpemakaianpribadi Int                     @id @default(autoincrement())
+  tanggal            DateTime?               @db.Date
+  idsku              String?                 @db.VarChar(255)
+  del                tbpemakaianpribadi_del? @default(n)
+  keteranganpribadi  String?                 @db.VarChar(255)
+  tanggalkembali     DateTime?               @db.Date
+}
+
+model tbpembayaran_detail {
+  id               Int      @id @default(autoincrement())
+  nonota           String?  @db.VarChar(25)
+  idjp             String?  @default("") @db.VarChar(8)
+  jumlahpembayaran Float?
+  persenmdr        Decimal? @db.Decimal(10, 2)
+}
+
+model tbpengiriman {
+  nourut            Int               @id @default(autoincrement())
+  idpengiriman      String            @db.VarChar(25)
+  tanggalpengiriman DateTime?         @db.Date
+  idoutlet          String?           @db.VarChar(10)
+  notepengiriman    String?           @db.Text
+  del               tbpengiriman_del? @default(n)
+}
+
+model tbpengiriman_detail {
+  idpengirimandetail Int                         @id @default(autoincrement())
+  idpengiriman       String?                     @db.VarChar(25)
+  idsku              String?                     @db.VarChar(25)
+  status             tbpengiriman_detail_status? @default(pending)
+  dateinput          DateTime?                   @db.DateTime(0)
+  dateupdate         DateTime?                   @db.DateTime(6)
+  del                tbpengiriman_detail_del?    @default(n)
+}
+
+model tbpenjualan {
+  nonota              String                @id @default("") @db.VarChar(50)
+  idmember            String?               @db.VarChar(20)
+  idmatauang          String?               @db.VarChar(20)
+  totalharga          Float?
+  tanggalpenjualan    DateTime?             @db.Date
+  potongan            Float?
+  idoutlet            String?               @db.VarChar(20)
+  idpameran           String?               @db.VarChar(20)
+  nilairupiah         Float?
+  idbasistem          String?               @db.VarChar(20)
+  idbatransaksi       String?               @db.VarChar(11)
+  keteranganpenjualan String?               @db.VarChar(255)
+  del                 tbpenjualan_del?      @default(n)
+  iduser              String?               @db.VarChar(25)
+  token               String?               @db.VarChar(255)
+  kategori            tbpenjualan_kategori?
+  status              tbpenjualan_status?
+  tgllunas            DateTime              @db.Date
+  share_ba            tbpenjualan_share_ba  @default(FULL)
+}
+
+model tbpenjualan_biaya_tambahan {
+  id                Int     @id @default(autoincrement())
+  nonota            String? @db.VarChar(255)
+  id_biaya_tambahan String? @default("") @db.VarChar(255)
+  biaya             Float
+}
+
+model tbpenjualan_detail {
+  id       Int                         @id @default(autoincrement())
+  nonota   String?                     @db.VarChar(255)
+  idsku    String?                     @db.VarChar(255)
+  hargafix Float
+  potongan Float
+  share_ba tbpenjualan_detail_share_ba @default(FULL)
+}
+
+model tbpenjualan_packaging {
+  iddetailpackaging Int     @id @default(autoincrement())
+  nonota            String? @db.VarChar(50)
+  idpackaging       String? @db.VarChar(10)
+  jumlah            Int?
+  hargasatuan       Float?
+  totalharga        Float?
+}
+
+model tbphotoproduk {
+  idphotoproduk Int                @id @default(autoincrement())
+  photoproduk   String?            @db.VarChar(50)
+  idsku         String?            @db.VarChar(20)
+  del           tbphotoproduk_del? @default(n)
+  urutan        Int
+  created_at    DateTime?          @default(now()) @db.Timestamp(6)
+}
+
+model tbproduk {
+  idsku           String        @id @db.VarChar(8)
+  tanggalproduksi DateTime?     @db.Date
+  idjenis         String        @db.VarChar(8)
+  nama            String?       @db.VarChar(50)
+  idpengrajin     String?       @db.VarChar(8)
+  warna           String?       @db.VarChar(256)
+  material        String?       @db.VarChar(256)
+  pknow           String?       @db.LongText
+  panjang         String?       @db.VarChar(255)
+  lebar           String?       @db.VarChar(255)
+  tinggi          String?       @db.VarChar(255)
+  berat           String?       @db.VarChar(255)
+  hargajual       Float?
+  hargamember     Float?
+  hargaowner      Float?
+  idstatusproduk  String        @db.VarChar(8)
+  lokasi          String        @db.VarChar(256)
+  del             tbproduk_del? @default(n)
+}
+
+model tbremake {
+  idremake         Int           @id @default(autoincrement())
+  idsku            String?       @db.VarChar(255)
+  tanggal          DateTime?     @db.Date
+  del              tbremake_del? @default(n)
+  keteranganremake String?       @db.VarChar(255)
+}
+
+model tbstatusproduk {
+  idstatusproduk String              @id @db.VarChar(8)
+  statusproduk   String?             @db.VarChar(50)
+  del            tbstatusproduk_del? @default(n)
+}
+
+model tbstokoutlet {
+  id              Int                          @id @default(autoincrement())
+  idoutlet        String?                      @db.VarChar(25)
+  idsku           String?                      @db.VarChar(25)
+  secondary_sku   String?                      @db.VarChar(15)
+  date_created    DateTime?                    @db.DateTime(0)
+  date_modify     DateTime?                    @db.DateTime(0)
+  del             tbstokoutlet_del?            @default(n)
+  statusphototema tbstokoutlet_statusphototema @default(n)
+}
+
+model tbstokoutlet_display {
+  id           Int                       @id @default(autoincrement())
+  idoutlet     String?                   @db.VarChar(25)
+  idsku        String?                   @db.VarChar(25)
+  date_created DateTime?                 @db.DateTime(0)
+  date_modify  DateTime?                 @db.DateTime(0)
+  del          tbstokoutlet_display_del? @default(n)
+}
+
+model tbstokoutlet_gallery {
+  id            Int                       @id @default(autoincrement())
+  idoutlet      String?                   @db.VarChar(25)
+  idsku         String?                   @db.VarChar(25)
+  secondary_sku String?                   @db.VarChar(15)
+  date_created  DateTime?                 @db.DateTime(0)
+  date_modify   DateTime?                 @db.DateTime(0)
+  del           tbstokoutlet_gallery_del? @default(n)
+}
+
+model tbstokpameran {
+  idstokpameran Int                    @id @default(autoincrement())
+  idsku         String?                @db.VarChar(20)
+  secondary_sku String?                @db.VarChar(15)
+  idpameran     String?                @db.VarChar(25)
+  tanggal       DateTime?              @db.DateTime(0)
+  kembali       tbstokpameran_kembali? @default(BELUM_KEMBALI)
+  keterangan    String                 @db.VarChar(255)
+  del           tbstokpameran_del?     @default(n)
+}
+
+model tbtokenpotongan {
+  idtoken    Int                     @id @default(autoincrement())
+  token      String?                 @db.VarChar(10)
+  approved   String?                 @db.VarChar(255)
+  keterangan String?                 @db.Text
+  status     tbtokenpotongan_status? @default(n)
+  tanggal    DateTime?               @db.Date
+  del        tbtokenpotongan_del?    @default(n)
+}
+
+model tbuseroutlet {
+  id       Int     @id @default(autoincrement())
+  iduser   String? @db.VarChar(255)
+  idoutlet String? @db.VarChar(255)
+}
+
+model tbuserpameran {
+  iduser    Int                  @id @default(autoincrement())
+  username  String               @db.VarChar(25)
+  password  String               @db.VarChar(255)
+  idpameran String               @db.VarChar(25)
+  idoutlet  String               @db.VarChar(25)
+  status    tbuserpameran_status @default(active)
+}
+
+model temporary {
+  idsku String @id @db.VarChar(25)
+}
+
+model things_to_do {
+  id         Int                 @id @default(autoincrement())
+  tanggal    DateTime            @db.Date
+  customer   String              @db.VarChar(50)
+  judul      String              @db.VarChar(50)
+  keterangan String              @db.Text
+  status     things_to_do_status @default(PENDING)
+  del        things_to_do_del    @default(n)
+}
+
+model things_to_do_photo {
+  id              Int    @id @default(autoincrement())
+  id_things_to_do Int
+  photo           String @db.VarChar(255)
+}
+
+model things_to_do_progress {
+  id              Int      @id @default(autoincrement())
+  id_things_to_do String   @db.VarChar(8)
+  tanggal         DateTime @db.Date
+  progress        String   @db.VarChar(255)
+}
+
+model todo_produk {
+  id       Int     @id @default(autoincrement())
+  iddetail String? @db.VarChar(256)
+  idcust   String? @db.VarChar(256)
+  idba     String? @db.VarChar(256)
+  idsku    String? @db.VarChar(256)
+  tanggal  String  @db.VarChar(256)
+}
+
+model todo_report {
+  id         Int     @id @default(autoincrement())
+  idcust     String  @db.VarChar(256)
+  idba       String? @db.VarChar(256)
+  respon     String? @db.VarChar(256)
+  interaksi  String? @db.VarChar(256)
+  created_on String  @db.VarChar(256)
+}
+
+model todo_report_detail {
+  id         Int     @id @default(autoincrement())
+  id_report  String? @db.VarChar(256)
+  id_cust    String? @db.VarChar(256)
+  id_ba      String? @db.VarChar(256)
+  respon     String? @db.VarChar(256)
+  interaksi  String? @db.VarChar(256)
+  keterangan String? @db.MediumText
+  tanggal    String? @db.MediumText
+  created_on Int?
+}
+
+model users {
+  id                          Int      @id @default(autoincrement()) @db.UnsignedInt
+  ip_address                  String   @db.VarChar(45)
+  username                    String?  @db.VarChar(100)
+  password                    String   @db.VarChar(255)
+  email                       String   @unique(map: "uc_email") @db.VarChar(254)
+  activation_selector         String?  @unique(map: "uc_activation_selector") @db.VarChar(255)
+  activation_code             String?  @db.VarChar(255)
+  forgotten_password_selector String?  @unique(map: "uc_forgotten_password_selector") @db.VarChar(255)
+  forgotten_password_code     String?  @db.VarChar(255)
+  forgotten_password_time     Int?     @db.UnsignedInt
+  remember_selector           String?  @unique(map: "uc_remember_selector") @db.VarChar(255)
+  remember_code               String?  @db.VarChar(255)
+  created_on                  Int      @db.UnsignedInt
+  last_login                  Int?     @db.UnsignedInt
+  active                      Boolean?
+  first_name                  String?  @db.VarChar(50)
+  last_name                   String?  @db.VarChar(50)
+  company                     String?  @db.VarChar(100)
+  phone                       String?  @db.VarChar(20)
+}
+
+model users_groups {
+  id       Int @id @default(autoincrement()) @db.UnsignedInt
+  user_id  Int @db.UnsignedInt
+  group_id Int @db.UnsignedMediumInt
+
+  @@unique([user_id, group_id], map: "uc_users_groups")
+  @@index([group_id], map: "fk_users_groups_groups1_idx")
+  @@index([user_id], map: "fk_users_groups_users1_idx")
+}
+
+model vip_activity {
+  id         Int      @id @default(autoincrement())
+  idsku      String   @db.VarChar(256)
+  idcust     String   @db.VarChar(256)
+  idba       String   @db.VarChar(256)
+  kategori   String   @db.VarChar(256)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+}
+
+enum share_ba_kategori {
+  BULANAN
+  TAHUNAN
+  ASSIST
+
+  @@map("23_share_ba_kategori")
+}
+
+enum tb_packaging_transaksi_jenistransaksi {
+  in
+  out
+}
+
+enum menu_galley_jenis_menu {
+  main
+  sub
+
+  @@map("23_menu_galley_jenis_menu")
+}
+
+enum tbpameran_jenispameran {
+  PAMERAN
+  PRIVATE_VIEWING        @map("PRIVATE VIEWING")
+  VVIP___PRIVATE_VIEWING @map("VVIP - PRIVATE VIEWING")
+}
+
+enum tbstatusproduk_del {
+  y
+  n
+}
+
+enum tb_menu_jenis_menu {
+  Default
+  Outlet
+  Master
+}
+
+enum tb_proses_lilin_jenis_proses {
+  Master
+  Non_Master @map("Non Master")
+}
+
+enum tb_special_cust_del {
+  Yes
+  No
+}
+
+enum absensi_photo_jenis {
+  check_in  @map("check in")
+  check_out @map("check out")
+
+  @@map("23_absensi_photo_jenis")
+}
+
+enum opname_status {
+  pending
+  finish
+
+  @@map("23_opname_status")
+}
+
+enum tbbrandadvisior_status {
+  active
+  deactive
+}
+
+enum tbpemakaianpribadi_del {
+  y
+  n
+}
+
+enum tbpengiriman_detail_status {
+  pending
+  received
+  returned
+}
+
+enum tbphotoproduk_del {
+  y
+  n
+}
+
+enum tbremake_del {
+  y
+  n
+}
+
+enum tb_ilustrasi_del {
+  y
+  n
+}
+
+enum tb_mata_uang_del {
+  y
+  n
+}
+
+enum tb_photo_design_del {
+  y
+  n
+}
+
+enum tb_photo_ilustrasi_del {
+  n
+  y
+}
+
+enum tb_photo_karet_del {
+  Y
+  N
+}
+
+enum tb_photo_lilin_del {
+  y
+  n
+}
+
+enum tb_photo_pettycash_del {
+  yes
+  no
+}
+
+enum tb_po_2018_pembayaran_jns {
+  dp
+  pelunasan
+}
+
+enum tb_po_2018_photo_del {
+  y
+  n
+}
+
+enum tb_po_pengiriman_2018_del {
+  n
+  y
+}
+
+enum tb_po_pengiriman_done_2018_del {
+  n
+  y
+}
+
+enum tb_produk_detail_del {
+  y
+  n
+}
+
+enum tb_service_2018_photo_del {
+  y
+  n
+}
+
+enum tb_service_customer_2018_photo_del {
+  y
+  n
+}
+
+enum tb_service_customer_pengiriman_2018_del {
+  n
+  y
+}
+
+enum tb_service_customer_pengiriman_2018_warehouse_del {
+  n
+  y
+}
+
+enum tb_service_pengiriman_2018_del {
+  n
+  y
+}
+
+enum opname_item_fisik {
+  baik
+  buruk
+  hilang
+  photo_tidak_sesuai @map("photo tidak sesuai")
+
+  @@map("23_opname_item_fisik")
+}
+
+enum tbtokenpotongan_status {
+  y
+  n
+}
+
+enum tb_inventory_photo_del {
+  yes
+  no
+}
+
+enum tb_proses_ilustrasi_status {
+  Proses
+  Selesai
+}
+
+enum tb_tandaterima_del {
+  n
+  y
+}
+
+enum absensi_status {
+  online
+  offline
+
+  @@map("23_absensi_status")
+}
+
+enum opname_item_pricetag {
+  baik
+  buruk
+  hilang
+  harga_tidak_sesuai @map("harga tidak sesuai")
+
+  @@map("23_opname_item_pricetag")
+}
+
+enum tbgift_del {
+  y
+  n
+}
+
+enum tboutlet_del {
+  y
+  n
+}
+
+enum tbpengiriman_del {
+  y
+  n
+}
+
+enum tbpenjualan_detail_share_ba {
+  FULL
+  ASSIST
+  INFORMASI
+  EKSEKUTOR
+}
+
+enum tbstokoutlet_display_del {
+  y
+  n
+}
+
+enum tbstokpameran_kembali {
+  BELUM_KEMBALI @map("BELUM KEMBALI")
+  KEMBALI
+}
+
+enum tbuserpameran_status {
+  active
+  deactive
+}
+
+enum tb_deposit_del {
+  y
+  n
+}
+
+enum tb_ilustrasi_status {
+  Available
+  Process
+  Finish
+}
+
+enum tb_invoice_smtara_del {
+  y
+  n
+}
+
+enum tb_karet_master_status {
+  Available
+  Proses
+  Finish
+}
+
+enum tb_pelunasan_flag {
+  y
+  n
+}
+
+enum tb_pengrajin_del {
+  y
+  n
+}
+
+enum tb_produk_krm_del {
+  Yes
+  No
+}
+
+enum tb_proses_kasting_status {
+  Proses
+  Selesai
+}
+
+enum tb_salestergantung_del {
+  y
+  n
+}
+
+enum things_to_do_status {
+  PENDING
+  PROSES
+  SELESAI
+  BATAL
+}
+
+enum customer_knowledge_del {
+  y
+  n
+
+  @@map("23_customer_knowledge_del")
+}
+
+enum opname_item_atc {
+  baik
+  buruk
+  hilang
+
+  @@map("23_opname_item_atc")
+}
+
+enum tbactivity_del {
+  y
+  n
+}
+
+enum tbpengiriman_detail_del {
+  y
+  n
+}
+
+enum tbstokoutlet_del {
+  y
+  n
+}
+
+enum tbstokoutlet_gallery_del {
+  y
+  n
+}
+
+enum tbtokenpotongan_del {
+  y
+  n
+}
+
+enum tb_karet_del {
+  y
+  n
+}
+
+enum tb_karet_detail_del {
+  yes
+  no
+}
+
+enum tb_proses_kasting_del {
+  y
+  n
+}
+
+enum tb_service_customer_2018_pembayaran_flag {
+  y
+  n
+}
+
+enum tb_token_potongan_salesvolume {
+  y
+  n
+}
+
+enum things_to_do_del {
+  y
+  n
+}
+
+enum tbstokoutlet_statusphototema {
+  y
+  n
+}
+
+enum tbstokpameran_del {
+  y
+  n
+}
+
+enum tb_jp_del {
+  y
+  n
+}
+
+enum tb_karet_master_del {
+  Y
+  N
+}
+
+enum tb_lilin_status {
+  Available
+  Process
+  Finish
+}
+
+enum pegawai_del {
+  y
+  n
+
+  @@map("23_pegawai_del")
+}
+
+enum tb_inventory_del {
+  yes
+  no
+}
+
+enum tb_lilin_keterangan {
+  Available
+  Karet
+  Kasting
+}
+
+enum tb_proses_lilin_status {
+  Proses
+  Selesai
+  Terkasting
+}
+
+enum tb_karet_status {
+  Available
+  Process
+  Finish
+}
+
+enum tb_lilin_del {
+  y
+  n
+}
+
+enum tb_promote_active {
+  true
+  false
+}
+
+enum tb_proses_karet_status {
+  Proses
+  Selesai
+  Terkasting
+}
+
+enum tb_proses_lilin_del {
+  y
+  n
+}
+
+enum tb_invoice_smtara_status {
+  paid
+  unpaid
+  cancel
+}
+
+enum tb_proses_karet_del {
+  y
+  n
+}
+
+enum opname_item_status_item {
+  pending
+  finish
+
+  @@map("23_opname_item_status_item")
+}
+
+enum tbcostumer_del {
+  y
+  n
+}
+
+enum tbpameran_del {
+  y
+  n
+}
+
+enum tb_design_del {
+  y
+  n
+  x
+}
+
+enum tb_pettycash_del {
+  y
+  n
+}
+
+enum tbcostumer_status {
+  member
+  nonmember
+  vvip
+}
+
+enum tbpameran_statuspmr {
+  active
+  deactive
+}
+
+enum tbpenjualan_del {
+  y
+  n
+}
+
+enum tb_design_status {
+  AVAILABLE
+  PROCESS
+  FINISH
+  USED
+}
+
+enum tb_kasting_status {
+  Available
+  Process
+  Finish
+}
+
+enum tbcostumer_todo {
+  y
+  n
+}
+
+enum tbcostumer_potensial_del {
+  y
+  n
+}
+
+enum tbpenjualan_kategori {
+  dp
+  po
+  lunas
+}
+
+enum tb_kasting_del {
+  Y
+  N
+}
+
+enum tb_material_del {
+  y
+  n
+}
+
+enum tb_material_tambahan_del {
+  y
+  n
+}
+
+enum tbpenjualan_status {
+  piutang
+  lunas
+}
+
+enum tbproduk_del {
+  y
+  n
+}
+
+enum tbpenjualan_share_ba {
+  FULL
+  ASSIST
+}
+
+enum tb_po_2018_status {
+  satu @map("1")
+  dua @map("2")
+  tiga @map("3")
+  empat @map("4")
+  lima @map("5")
+  enam @map("6")
+  tujuh @map("7")
+  delapan @map("8")
+}
+
+enum tb_service_customer_2018_status {
+  satu @map("1")
+  dua @map("2")
+  tiga @map("3")
+  empat @map("4")
+  lima @map("5")
+  enam @map("6")
+  tujuh @map("7")
+  delapan @map("8")
+}
+
+enum tb_service_2018_status {
+  satu @map("1")
+  dua @map("2")
+  tiga @map("3")
+  empat @map("4")
+  lima @map("5")
+  enam @map("6")
+  tujuh @map("7")
+  delapan @map("8")
+}
+
+enum tb_po_2018_del {
+  n
+  y
+}
+
+enum tb_service_customer_2018_del {
+  n
+  y
+}
+
+enum tb_service_2018_del {
+  n
+  y
+}
+
+enum tb_service_customer_2018_statuspembayaran {
+  lunas
+  piutang
+}
