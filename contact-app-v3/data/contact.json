@@ -1,12 +1,8 @@
 [
+  { "nama": "indra", "hp": "45454548", "email": "indra@gmail.com" },
   {
     "nama": "muhammadlim",
     "hp": "0895413408000",
-    "email": "ig.muhammadlim@gmail.com"
-  },
-  {
-    "nama": "fajar",
-    "hp": "082158718438",
-    "email": "ig.fajar@gmail.com"
+    "email": "muhammadliem@gmail.com"
   }
 ]

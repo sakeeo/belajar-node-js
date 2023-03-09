@@ -1,0 +1,46 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <% if (typeof errors!='undefined') { %> <% errors.forEach(e => { %>
+      <div class="alert alert-danger" role="alert"><%= e.msg %></div>
+      <% }) %> <% } %>
+      <form action="/contact" method="post">
+        <div class="mb-3">
+          <label for="nama" class="form-label">NAMA</label>
+          <input
+            type="text"
+            class="form-control"
+            id="nama"
+            name="nama"
+            placeholder="jhon doe"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="hp" class="form-label">NOMER HP</label>
+          <input
+            type="text"
+            class="form-control"
+            id="hp"
+            name="hp"
+            placeholder="0895413408000"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            name="email"
+            placeholder="name@example.com"
+          />
+        </div>
+
+        <div class="mb-3">
+          <button type="submit" class="btn btn-primary">SIMPAN</button>
+          <a type="submit" class="btn btn-secondary" href="/contact">BATAL</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

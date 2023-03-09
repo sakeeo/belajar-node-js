@@ -2,9 +2,29 @@
   <div class="row">
     <div class="col-md-8">
       <h2>Daftar Kontak</h2>
-      <a href="#" class="btn btn-primary badge rounded-pill">
+      <a href="/contact/add" class="btn btn-primary badge rounded-pill">
         <i class="bi bi-person-add"></i> Tambah</a
       >
+
+      <% if (contacts.length === 0 ) { %>
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+        <strong>Alert Heading</strong> Alert Content
+      </div>
+
+      <script>
+        var alertList = document.querySelectorAll(".alert");
+        alertList.forEach(function (alert) {
+          new bootstrap.Alert(alert);
+        });
+      </script>
+
+      <% } %>
       <table class="table">
         <thead>
           <tr>

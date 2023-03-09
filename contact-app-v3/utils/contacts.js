@@ -26,7 +26,24 @@ const findContact = (findNama) => {
   return contact;
 };
 
+const saveContact = (contacts) => {
+  fs.writeFileSync(filePath, JSON.stringify(contacts));
+};
+
+const addContact = (contact) => {
+  const contacts = loadContacts();
+  contacts.push(contact);
+  saveContact(contacts);
+};
+
+const duplicat = (nama) => {
+  const contacts = loadContacts();
+  return contacts.find((contact) => contact.nama === nama);
+};
+
 module.exports = {
   loadContacts,
   findContact,
+  addContact,
+  duplicat,
 };
