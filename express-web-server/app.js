@@ -3,15 +3,20 @@ const app = express();
 const port = 3000;
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.sendFile("./pages/index.html", { root: __dirname });
 });
 
 app.get("/about", (req, res) => {
-  res.send("halaman about!");
+  res.sendFile("./pages/about.html", { root: __dirname });
 });
 
 app.get("/contact", (req, res) => {
-  res.send("halaman contact!");
+  res.sendFile("./pages/contact.html", { root: __dirname });
+});
+
+app.use("/", (req, res) => {
+  res.status(404);
+  res.send("<h1>404</h1>");
 });
 
 app.listen(port, () => {
