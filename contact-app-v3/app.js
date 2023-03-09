@@ -1,6 +1,8 @@
 const { render } = require("ejs");
 const express = require("express");
 const expressEjsLayouts = require("express-ejs-layouts");
+const { loadContacts, findContact } = require("./utils/contacts");
+
 const app = express();
 const port = 3000;
 
@@ -22,9 +24,21 @@ app.get("/about", (req, res) => {
 });
 
 app.get("/contact", (req, res) => {
+  const contacts = loadContacts();
   res.render("contact", {
     title: "contact",
     layout: "layouts/main",
+    contacts,
+  });
+});
+
+app.get("/contact/:nama", (req, res) => {
+  const contact = findContact(req.params.nama);
+  console.log(contact);
+  res.render("details", {
+    title: "details",
+    layout: "layouts/main",
+    contact,
   });
 });
 

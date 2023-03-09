@@ -1,0 +1,19 @@
+<% if (contact) { %>
+<h2>Details Contact</h2>
+<ul class="list-group list-group">
+  <li class="list-group-item d-flex justify-content-between align-items-start">
+    <div class="ms-2 me-auto">
+      <div class="fw-bold">Nama : <%= contact.nama %></div>
+      email : <%= contact.email %>
+      <br />
+      nomer hp : <%= contact.hp %>
+    </div>
+    <a class="badge bg-primary rounded-pill" href="/contact">Kembali</a>
+  </li>
+</ul>
+<% } else { %>
+<div class="alert alert-danger" role="alert">
+  Contact tidak ditemukan
+  <a href="/contact" class="alert-link">Kembali</a>
+</div>
+<% } %>
